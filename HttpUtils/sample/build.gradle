@@ -38,6 +38,8 @@ dependencies {
     compile project(':litehttp')
     compile project(':asynchttp')
     compile project(':AndroidAsync')
+    compile project(':xchttpclient')
+
 
     compile 'com.yolanda.nohttp:nohttp:1.0.4'
     compile 'com.alibaba:fastjson:1.2.11'
