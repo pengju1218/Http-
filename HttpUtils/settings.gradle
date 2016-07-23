@@ -1,2 +1,2 @@
-include ':nohttp',':okhttp',':asynchttp',':litehttp'
+include ':nohttp',':okhttp',':asynchttp',':litehttp',':AndroidAsync'
 include ':sample'
