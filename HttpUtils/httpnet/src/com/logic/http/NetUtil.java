@@ -1,17 +1,51 @@
 package com.logic.http;
 
 import android.accounts.NetworkErrorException;
+import android.net.ParseException;
+import android.util.Log;
+
+
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.params.ConnRouteParams;
+
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by Administrator on 2016/7/24 0024.
- */
+import javax.net.ssl.SSLHandshakeException;
+
+import sun.net.www.http.HttpClient;
+
+
 public class NetUtil {
     public static String post(String url, String content) {
         HttpURLConnection conn = null;
@@ -101,5 +135,170 @@ public class NetUtil {
         os.close();
         return state;
     }
+
+
+    public static String sendURLGETRequest(String path, RequestParams params) {
+
+        try {
+
+
+
+
+            URL url = new URL(path+params.getParams());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(20000);
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+            }
+            if (conn != null)
+                conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    public static String sendURLGETRequest1(String path, RequestParams requestParams) {
+
+        try {
+
+            URL url = new URL(path+requestParams.getParams());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(20000);
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+            }
+            if (conn != null)
+                conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String sendURLPOSTRequest(String path, RequestParams params) {
+        try {
+            boolean success = false;
+            //StringBuilder是用来组拼请求参数
+            String sb=params.getParams().substring(1,params.getParams().length());
+
+            //entity为请求体部分内容
+            //如果有中文则以UTF-8编码为username=%E4%B8%AD%E5%9B%BD&password=123
+            byte[] entity = sb.getBytes();
+
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(2000);
+            // 设置以POST方式
+            conn.setRequestMethod("POST");
+            // Post 请求不能使用缓存
+            //  urlConn.setUseCaches(false);
+            //要向外输出数据，要设置这个
+            conn.setDoOutput(true);
+            // 配置本次连接的Content-type，配置为application/x-www-form-urlencoded
+            //设置content－type获得输出流，便于想服务器发送信息。
+            //POST请求这个一定要设置
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Length", entity.length + "");
+            // 要注意的是connection.getOutputStream会隐含的进行connect。
+            OutputStream out = conn.getOutputStream();
+            //写入参数值
+            out.write(entity);
+            //刷新、关闭
+            out.flush();
+            out.close();
+
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+
+            }
+            if (conn != null)
+                conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+
+    }
+
+
+    public static String getHttpRequest(String UrlPath, RequestParams requestParams) {
+
+        String  content="";
+
+        org.apache.http.client.HttpClient httpClient = getHttpClient();
+        HttpGet getMethod = new HttpGet(UrlPath+requestParams.getParams());
+
+        HttpResponse response = null;
+        try {
+            response = httpClient.execute(getMethod);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (response != null && response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            try {
+                content =   EntityUtils.toString(response.getEntity(), "UTF-8");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return content;
+    }
+
+
+    public static String sendPOSTRequestHttpClient(String path, Map<String, String> params) {
+        try {
+            boolean success = false;
+            // 封装请求参数
+            List<NameValuePair> pair = new ArrayList<NameValuePair>();
+            if (params != null && !params.isEmpty()) {
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    pair.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                }
+            }
+            // 把请求参数变成请求体部分
+            UrlEncodedFormEntity uee = new UrlEncodedFormEntity(pair, "utf-8");
+            // 使用HttpPost对象设置发送的URL路径
+            HttpPost post = new HttpPost(path);
+            // 发送请求体
+            post.setEntity(uee);
+            // 创建一个浏览器对象，以把POST对象向服务器发送，并返回响应消息
+            org.apache.http.client.HttpClient dhc = getHttpClient();
+            HttpResponse response = dhc.execute(post);
+            if (response.getStatusLine().getStatusCode() == 200) {
+
+                return EntityUtils.toString(response.getEntity(), "UTF-8");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static DefaultHttpClient getHttpClient() {
+        BasicHttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+        HttpConnectionParams.setSoTimeout(httpParams, 5000);
+        DefaultHttpClient client = new DefaultHttpClient(httpParams);
+        return client;
+    }
+
 
 }
