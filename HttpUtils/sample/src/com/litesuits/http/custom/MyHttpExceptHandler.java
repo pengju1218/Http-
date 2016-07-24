@@ -1,19 +1,21 @@
 package com.litesuits.http.custom;
 
 import android.app.Activity;
+/*
 import com.litesuits.http.data.HttpStatus;
 import com.litesuits.http.exception.*;
 import com.litesuits.http.exception.handler.HttpExceptionHandler;
 import com.litesuits.http.utils.HttpUtil;
+*/
 
-public class MyHttpExceptHandler extends HttpExceptionHandler {
+public class MyHttpExceptHandler /*  extends HttpExceptionHandler */{
     private Activity activity;
 
     public MyHttpExceptHandler(Activity activity) {
         this.activity = activity;
     }
 
-    @Override
+ /*   @Override
     protected void onClientException(HttpClientException e, ClientException type) {
         switch (e.getExceptionType()) {
             case UrlIsNull:
@@ -64,5 +66,5 @@ public class MyHttpExceptHandler extends HttpExceptionHandler {
         }
         HttpUtil.showTips(activity, "LiteHttp2.0", "Server Exception:\n" + e.toString());
         activity = null;
-    }
+    }*/
 }

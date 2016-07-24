@@ -1,2 +1,1 @@
-include ':nohttp',':okhttp',':asynchttp',':litehttp',':AndroidAsync',':xchttpclient'
-include ':sample'
+include ':sample',':httpnet'

@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.*;
-import com.litesuits.http.HttpConfig;
+/*import com.litesuits.http.HttpConfig;
 import com.litesuits.http.LiteHttp;
 import com.litesuits.http.annotation.*;
 import com.litesuits.http.concurrent.OverloadPolicy;
@@ -41,7 +41,7 @@ import com.litesuits.http.request.param.*;
 import com.litesuits.http.request.query.JsonQueryBuilder;
 import com.litesuits.http.response.Response;
 import com.litesuits.http.utils.HttpUtil;
-import com.yanzhenjie.http.sample.R;
+import com.yanzhenjie.http.sample.R;*/
 
 import org.json.JSONObject;
 
@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
     protected String TAG = MainActivity.class.getSimpleName();
     protected ListView mListview;
     protected BaseAdapter mAdapter;
-    protected static LiteHttp liteHttp;
+   // protected static LiteHttp liteHttp;
     protected Activity activity = null;
     protected int count = 0;
     private boolean needRestore;
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+       /* requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         activity = this;
         initViews();
@@ -97,9 +97,9 @@ public class MainActivity extends Activity {
         });
     }
 
-    /**
+    *//**
      * 单例 keep an singleton instance of litehttp
-     */
+     *//*
     private void initLiteHttp() {
         if (liteHttp == null) {
             liteHttp = LiteHttp.build(this)
@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    /**
+    *//**
      * <item>0. Quickly Configuration</item>
      * <item>1. Asynchronous Request</item>
      * <item>2. Synchronous Request</item>
@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
      * <item>22. Best Practice: SmartExecutor</item>
      * <item>23. Best Practice: Auto-Conversion of Complex Model</item>
      * <item>24. Best Practice: HTTP Rich Param Model</item>
-     */
+     *//*
     private void clickTestItem(final int which) {
         // restore http config
         if (needRestore) {
@@ -365,9 +365,9 @@ public class MainActivity extends Activity {
                             }
                         }));
 
-                /**
+                *//**
                  * Request Model : json string translate to user object
-                 */
+                 *//*
                 class UserRequest extends JsonAbsRequest<User> {
                     public UserRequest(String url, HttpParamModel param) {
                         super(url, param);
@@ -891,7 +891,7 @@ public class MainActivity extends Activity {
 
                 // the correct way to set global http listener for all request.
                 liteHttp.getConfig().setGlobalHttpListener(globalHttpListener);
-                /**
+                *//**
                  * new http listener for current request:
                  *
                  * runOnUiThread = false;
@@ -899,7 +899,7 @@ public class MainActivity extends Activity {
                  * uploadingNotify = false;
                  *
                  * actually you can set a series of http listener for one http request.
-                 */
+                 *//*
                 HttpListener<Bitmap> firstHttpListener = new HttpListener<Bitmap>(false, false, false) {
                     @Override
                     public void onSuccess(Bitmap bitmap, Response<Bitmap> response) {
@@ -1058,11 +1058,11 @@ public class MainActivity extends Activity {
 
                     // 可以复写设置headers/attachToUrl/listener/httpbody 等参数
 
-                    /**
+                    *//**
                      * 返回true则将将成员变量{@link #host}、{@link #apiPath}拼接到url中
                      * 返回false，则不拼接。
                      * @return
-                     */
+                     *//*
                     @Override
                     public boolean isFieldsAttachToUrl() {
                         return false;
@@ -1094,9 +1094,9 @@ public class MainActivity extends Activity {
     }
 
 
-    /**
+    *//**
      * global http listener for all request.
-     */
+     *//*
     GlobalHttpListener globalHttpListener = new GlobalHttpListener() {
         @Override
         public void onStart(AbstractRequest<?> request) {
@@ -1119,13 +1119,13 @@ public class MainActivity extends Activity {
         }
     };
 
-    /**
+    *//**
      * http listener for current reuqest:
      *
      * runOnUiThread = true;
      * readingNotify = true;
      * uploadingNotify = true;
-     */
+     *//*
     HttpListener<Bitmap> secondaryListener = new HttpListener<Bitmap>(true, true, true) {
         ProgressDialog progressDialog = null;
 
@@ -1160,6 +1160,6 @@ public class MainActivity extends Activity {
             progressDialog.setMax((int) total);
             progressDialog.setProgress((int) len);
         }
-
+*/
     };
 }

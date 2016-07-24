@@ -16,8 +16,7 @@
 package com.yanzhenjie.http.sample;
 
 import com.yanzhenjie.http.sample.config.AppConfig;
-import com.yolanda.nohttp.Logger;
-import com.yolanda.nohttp.NoHttp;
+
 
 /**
  * Created in Oct 23, 2015 12:59:13 PM.
@@ -33,9 +32,9 @@ public class Application extends android.app.Application {
         super.onCreate();
         _instance = this;
 
-        NoHttp.initialize(this);
+     /*   NoHttp.initialize(this);
         Logger.setTag("NoHttpSample");
-        Logger.setDebug(true);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志
+        Logger.setDebug(true);// 开始NoHttp的调试模式, 这样就能看到请求过程和日志*/
 
         AppConfig.getInstance();
     }
