@@ -30,8 +30,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 RequestParams params =new RequestParams();
-                params.pub("name","111");
-                params.pub("pass","222");
+                params.put("name","111");
+                params.put("pass","222");
                 AsynNetUtils.getHttp("http://192.168.0.101:8080/test/ok",params,new AsynNetUtils.Callback(){
 
                     @Override
