@@ -17,27 +17,27 @@ public class RequestParams implements Serializable {
 		this.map = map2;
 	}
 
-	public void pub(String key, String value) {
+	public void put(String key, String value) {
 		map.put(key, value);
 	}
 
-	public void pub(String key, Object value) {
+	public void put(String key, Object value) {
 		map.put(key, String.valueOf(value));
 	}
 
-	public void pub(String key, int value) {
+	public void put(String key, int value) {
 		map.put(key, value + "");
 	}
 
-	public void pub(String key, float value) {
+	public void put(String key, float value) {
 		map.put(key, String.valueOf(value));
 	}
 
-	public void pub(String key, double value) {
+	public void put(String key, double value) {
 		map.put(key, String.valueOf(value));
 	}
 
-	public void pub(String key, boolean value) {
+	public void put(String key, boolean value) {
 		map.put(key, String.valueOf(value));
 	}
 
