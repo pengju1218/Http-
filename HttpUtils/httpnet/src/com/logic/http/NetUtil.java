@@ -3,6 +3,7 @@ package com.logic.http;
 import android.accounts.NetworkErrorException;
 import android.net.ParseException;
 import android.util.Log;
+import android.util.Xml;
 
 
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -27,8 +28,11 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +51,26 @@ import sun.net.www.http.HttpClient;
 
 
 public class NetUtil {
-    public static String post(String url, String content) {
+
+    public static NetUtil netUtil;
+
+    public static NetUtil getInstance(){
+        if(netUtil==null){
+            netUtil=new NetUtil();
+        }
+        return netUtil;
+    }
+
+
+
+
+
+
+
+
+
+
+    public  String post(String url, String content) {
         HttpURLConnection conn = null;
         try {
             //创建一个URL对象
@@ -89,7 +112,7 @@ public class NetUtil {
         return null;
     }
 
-    public static String get(String url) {
+    public  String get(String url) {
         HttpURLConnection conn = null;
         try {
             //利用stringurl构建URL对象
@@ -122,7 +145,7 @@ public class NetUtil {
         return null;
     }
 
-    private static String getStringFromInputStream(InputStream is) throws IOException {
+    private  String getStringFromInputStream(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //模板代码必须熟练
         byte[] buffer = new byte[1024];
@@ -137,7 +160,7 @@ public class NetUtil {
     }
 
 
-    public static String sendURLGETRequest(String path, RequestParams params) {
+    public  String sendURLGETRequest(String path, RequestParams params) {
 
         try {
 
@@ -161,7 +184,7 @@ public class NetUtil {
         }
         return "";
     }
-    public static String sendURLGETRequest1(String path, RequestParams requestParams) {
+    public  String sendURLGETRequest1(String path, RequestParams requestParams) {
 
         try {
 
@@ -183,7 +206,7 @@ public class NetUtil {
         return "";
     }
 
-    public static String sendURLPOSTRequest(String path, RequestParams params) {
+    public  String sendURLPOSTRequest(String path, RequestParams params) {
         try {
             boolean success = false;
             //StringBuilder是用来组拼请求参数
@@ -231,7 +254,7 @@ public class NetUtil {
     }
 
 
-    public static String getHttpRequest(String UrlPath, RequestParams requestParams) {
+    public  String getHttpRequest(String UrlPath, RequestParams requestParams) {
 
         String  content="";
 
@@ -263,7 +286,7 @@ public class NetUtil {
     }
 
 
-    public static String sendPOSTRequestHttpClient(String path, Map<String, String> params) {
+    public  String sendPOSTRequestHttpClient(String path, Map<String, String> params) {
         try {
             boolean success = false;
             // 封装请求参数
@@ -292,14 +315,14 @@ public class NetUtil {
         return "";
     }
 
-    public static DefaultHttpClient getHttpClient() {
+    public  DefaultHttpClient getHttpClient() {
         BasicHttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
         HttpConnectionParams.setSoTimeout(httpParams, 5000);
         DefaultHttpClient client = new DefaultHttpClient(httpParams);
         return client;
     }
-    public static String sendURLPOSTJson(String path, String json) {
+    public  String sendURLPOSTJson(String path, String json) {
         try {
             boolean success = false;
             //StringBuilder是用来组拼请求参数
@@ -345,7 +368,7 @@ public class NetUtil {
         return "";
 
     }
-    public static String postXml(String path, Map<String, String> map) {
+    public  String postXml(String path, Map<String, String> map) {
         StringBuilder xml = new StringBuilder();
         xml.append("<xml>");
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -377,7 +400,7 @@ public class NetUtil {
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 Log.i("testxml", response + "");
-                return response;
+                return getXmlJson(response);
             }
 
             if (conn != null)
@@ -387,5 +410,71 @@ public class NetUtil {
             System.out.println(e);
         }
         return "";
+    }
+
+
+    public String getXmlJson(String s){
+
+        InputStream in_withcode;
+        StringBuffer json = new StringBuffer();
+        s = s.replaceAll("<!\\[CDATA\\[", " ");
+        s = s.replaceAll("\\]\\]>", " ");
+        s=s.trim();
+
+        //s="<?xml version=\"1.0\" encoding=\"UTF-8\"?><return_code>SUCCESS</return_code><return_msg>OK</return_msg><appid>wx92d44a070a670616</appid><mch_id>1361960602</mch_id><nonce_str>BLkb2FxguHeOL3zw</nonce_str><sign>9946200715A1FB86149B3D2B331B149A</sign><result_code>SUCCESS</result_code><prepay_id>wx20160727171534ed1da19ef70194308071</prepay_id><trade_type>APP</trade_type></xml>";
+        //s = s.replaceAll("]]", "");
+        Log.i("eeeeeeeeeeese", s + "");
+        final XmlPullParser parser;
+        try {
+            parser = Xml.newPullParser(); // 由android.util.Xml创建一个XmlPullParser实例
+            in_withcode = new ByteArrayInputStream(s.getBytes("UTF-8"));
+            parser.setInput(in_withcode, "UTF-8");
+
+            // 产生第一个事件
+            int eventType = parser.getEventType();
+            json.append("{");
+            Log.i("eeeeeeeeeeese", eventType + "");
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                Log.i("eeeeeeeeeeese", "22222222222" + "");
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+
+                        break;
+                    case XmlPullParser.START_TAG:
+                        Log.i("eeeeeeeeeeese", parser.getName());
+                        if (parser.getName() != null) {
+                            json.append("\"" + parser.getName() + "\"" + ":" );
+                        }
+                        break;
+                    case XmlPullParser.TEXT:
+                        json.append("\""
+                                + parser.getText() + "\",");
+                        break;
+                    case XmlPullParser.COMMENT:
+
+                    case XmlPullParser.END_TAG:
+
+                        break;
+
+                }
+
+                eventType = parser.next();
+
+            }
+            json.deleteCharAt(json.length() - 1);
+
+            json.append("}");
+
+            Log.i("eeeeeeeeeeese", json.toString());
+            in_withcode.close();
+        } catch (XmlPullParserException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return json.toString();
     }
 }

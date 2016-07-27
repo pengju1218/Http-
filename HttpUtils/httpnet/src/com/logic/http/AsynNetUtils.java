@@ -25,37 +25,6 @@ public class AsynNetUtils {
         void onResponse(String response);
     }
 
-    public static void get(final String url, final Callback callback) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String response = NetUtil.get(url);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onResponse(response);
-                    }
-                });
-            }
-        });
-    }
-
-    public static void post(final String url, final String content, final Callback callback) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String response = NetUtil.post(url, content);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onResponse(response);
-                    }
-                });
-            }
-        });
-    }
 
     public static void getUrl(final String url, RequestParams params, final Callback callback) {
 
@@ -111,15 +80,15 @@ public class AsynNetUtils {
 
 
             if ("getUrl".equals(method)) {
-                response = NetUtil.sendURLGETRequest(url[0], params);
+                response = NetUtil.getInstance().sendURLGETRequest(url[0], params);
             } else if ("postUrl".equals(method)) {
-                response = NetUtil.sendURLPOSTRequest(url[0], params);
+                response = NetUtil.getInstance().sendURLPOSTRequest(url[0], params);
             } else if ("getHttp".equals(method)) {
-                response = NetUtil.getHttpRequest(url[0], params);
+                response = NetUtil.getInstance().getHttpRequest(url[0], params);
             } else if ("postHttp".equals(method)) {
-                response = NetUtil.sendPOSTRequestHttpClient(url[0], params.map);
+                response = NetUtil.getInstance().sendPOSTRequestHttpClient(url[0], params.map);
             } else if ("postXml".equals(method)) {
-                response = NetUtil.postXml(url[0], params.map);
+                response = NetUtil.getInstance().postXml(url[0], params.map);
             }
             return response;
         }
@@ -148,7 +117,7 @@ public class AsynNetUtils {
 
             String response = "";
 
-            response = NetUtil.sendURLPOSTJson(url[0], params);
+            response = NetUtil.getInstance().sendURLPOSTJson(url[0], params);
 
             return response;
         }
