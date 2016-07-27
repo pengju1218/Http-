@@ -299,6 +299,93 @@ public class NetUtil {
         DefaultHttpClient client = new DefaultHttpClient(httpParams);
         return client;
     }
+    public static String sendURLPOSTJson(String path, String json) {
+        try {
+            boolean success = false;
+            //StringBuilder是用来组拼请求参数
+            // String sb=params.getParams().substring(1,params.getParams().length());
 
+            //entity为请求体部分内容
+            //如果有中文则以UTF-8编码为username=%E4%B8%AD%E5%9B%BD&password=123
+            byte[] entity = json.getBytes();
 
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(2000);
+            // 设置以POST方式
+            conn.setRequestMethod("POST");
+            // Post 请求不能使用缓存
+            //  urlConn.setUseCaches(false);
+            //要向外输出数据，要设置这个
+            conn.setDoOutput(true);
+            // 配置本次连接的Content-type，配置为application/x-www-form-urlencoded
+            //设置content－type获得输出流，便于想服务器发送信息。
+            //POST请求这个一定要设置
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", entity.length + "");
+            // 要注意的是connection.getOutputStream会隐含的进行connect。
+            OutputStream out = conn.getOutputStream();
+            //写入参数值
+            out.write(entity);
+            //刷新、关闭
+            out.flush();
+            out.close();
+
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+
+            }
+            if (conn != null)
+                conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+
+    }
+    public static String postXml(String path, Map<String, String> map) {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<xml>");
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            // 如果请求参数中有中文，需要进行URLEncoder编码 gbk/utf8
+            // xml.append("<" + entry.getKey() + ">" + URLEncoder.encode(entry.getValue(), "utf-8") + "</" + entry.getKey() + ">");
+            xml.append("<" + entry.getKey() + ">" + entry.getValue() + "</" + entry.getKey() + ">");
+        }
+        xml.append("</xml>");
+
+        try {
+            byte[] xmlbyte = xml.toString().getBytes("UTF-8");
+            Log.i("testxml", xml + "");
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setDoOutput(true);// 允许输出
+            conn.setDoInput(true);
+            conn.setUseCaches(false);// 不使用缓存
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("Content-Length", String.valueOf(xmlbyte.length));
+            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
+            // conn.setRequestProperty("X-ClientType", "2");//发送自定义的头信息
+            conn.getOutputStream().write(xmlbyte);
+            conn.getOutputStream().flush();
+            conn.getOutputStream().close();
+            if (conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                Log.i("testxml", response + "");
+                return response;
+            }
+
+            if (conn != null)
+                conn.disconnect();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            System.out.println(e);
+        }
+        return "";
+    }
 }
