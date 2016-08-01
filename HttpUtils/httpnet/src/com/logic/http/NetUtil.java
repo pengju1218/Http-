@@ -51,7 +51,7 @@ import sun.net.www.http.HttpClient;
 
 
 public class NetUtil {
-
+   private static  String mSESSIONID=null;
     public static NetUtil netUtil;
 
     public static NetUtil getInstance(){
@@ -82,7 +82,15 @@ public class NetUtil {
             conn.setReadTimeout(5000);//设置读取超时为5秒
             conn.setConnectTimeout(10000);//设置连接网络超时为10秒
             conn.setDoOutput(true);//设置此方法,允许向服务器输出内容
+ //设置session
+            if (mSESSIONID!= null) {
+                conn.setRequestProperty("Cookie","JSESSIONID="+mSESSIONID);
+            }
+            String cookieVal =conn.getHeaderField("Set-Cookie");
 
+            if (cookieVal != null) {
+                mSESSIONID = cookieVal.substring(0, cookieVal.indexOf(";"));
+            }
             //post请求的参数
             String data = content;
             //获得一个输出流,向服务器写数据,默认情况下,系统不允许向服务器输出内容
