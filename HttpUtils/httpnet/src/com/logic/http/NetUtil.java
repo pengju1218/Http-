@@ -330,7 +330,7 @@ public class NetUtil {
         DefaultHttpClient client = new DefaultHttpClient(httpParams);
         return client;
     }
-    public  String sendURLPOSTJson(String path, String json) {
+      public static String sendURLPOSTJson(String path, String json) {
         try {
             boolean success = false;
             //StringBuilder是用来组拼请求参数
@@ -344,15 +344,29 @@ public class NetUtil {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(2000);
             // 设置以POST方式
-            conn.setRequestMethod("POST");
+
             // Post 请求不能使用缓存
             //  urlConn.setUseCaches(false);
             //要向外输出数据，要设置这个
-            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");// 提交模式
+          //  conn.setRequestProperty("Content-Type", "plain/text; charset=UTF-8");
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            // 发送POST请求必须设置如下两行
             // 配置本次连接的Content-type，配置为application/x-www-form-urlencoded
             //设置content－type获得输出流，便于想服务器发送信息。
             //POST请求这个一定要设置
-            conn.setRequestProperty("Content-Type", "application/json");
+           // conn.setRequestProperty("Content-Type", "application/json");
+           // conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setInstanceFollowRedirects(true);
+            conn.setRequestProperty("Accept-Charset", "utf-8");
+           // conn.setRequestProperty("content-type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             conn.setRequestProperty("Content-Length", entity.length + "");
             // 要注意的是connection.getOutputStream会隐含的进行connect。
             OutputStream out = conn.getOutputStream();
@@ -376,6 +390,7 @@ public class NetUtil {
         return "";
 
     }
+   
     public  String postXml(String path, Map<String, String> map) {
         StringBuilder xml = new StringBuilder();
         xml.append("<xml>");
