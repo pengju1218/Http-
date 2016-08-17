@@ -153,7 +153,7 @@ public class NetUtil {
         return null;
     }
 
-    private  String getStringFromInputStream(InputStream is) throws IOException {
+    private static String getStringFromInputStream(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //模板代码必须熟练
         byte[] buffer = new byte[1024];
@@ -171,9 +171,6 @@ public class NetUtil {
     public  String sendURLGETRequest(String path, RequestParams params) {
 
         try {
-
-
-
 
             URL url = new URL(path+params.getParams());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -499,5 +496,37 @@ public class NetUtil {
         }
 
         return json.toString();
+    }
+
+
+    public static String sendURLPOSTRJson(String path,RequestParams params) {
+        try {
+            boolean e = false;
+            byte[] entity = params.getJson().getBytes();
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setConnectTimeout(2000);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Length", entity.length + "");
+            OutputStream out = conn.getOutputStream();
+            out.write(entity);
+            out.flush();
+            out.close();
+            if(conn.getResponseCode() == 200) {
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+            }
+
+            if(conn != null) {
+                conn.disconnect();
+            }
+        } catch (Exception var9) {
+            var9.printStackTrace();
+        }
+
+        return "";
     }
 }

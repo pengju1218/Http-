@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class RequestParams implements Serializable {
@@ -59,4 +60,22 @@ public class RequestParams implements Serializable {
 		return sb.toString();
 	}
 
+	public String getJson() {
+		StringBuffer sb = new StringBuffer("{");
+		if(this.map != null && this.map.size() != 0) {
+			for (Iterator i$ = this.map.entrySet().iterator(); i$.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) i$.next();
+				try {
+					sb.append("\"" + (String) entry.getKey()).append("\":").append("\"" + URLEncoder.encode((String) entry.getValue(), "utf-8") + "\",");
+				} catch (UnsupportedEncodingException var5) {
+					var5.printStackTrace();
+				}
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append("}");
+
+		}
+		return sb.toString();
+
+	}
 }

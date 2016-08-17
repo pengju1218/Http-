@@ -61,6 +61,11 @@ public class AsynNetUtils {
         httpTask.execute(url);
     }
 
+    public static void postRJson(final String url,final RequestParams params, final Callback callback) {
+        HttpTask httpTask = new HttpTask(params, callback, "postJson");
+        httpTask.execute(url);
+    }
+
     static class HttpTask extends AsyncTask<String, Integer, String> {
 
         public RequestParams params;
@@ -89,7 +94,13 @@ public class AsynNetUtils {
                 response = NetUtil.getInstance().sendPOSTRequestHttpClient(url[0], params.map);
             } else if ("postXml".equals(method)) {
                 response = NetUtil.getInstance().postXml(url[0], params.map);
+            }else if ("postJson".equals(method)) {
+                response = NetUtil.getInstance().sendURLPOSTRJson(url[0], params);
             }
+
+
+
+
             return response;
         }
 
