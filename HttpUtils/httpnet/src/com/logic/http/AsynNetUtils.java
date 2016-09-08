@@ -3,6 +3,7 @@ package com.logic.http;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -65,6 +66,14 @@ public class AsynNetUtils {
         HttpTask httpTask = new HttpTask(params, callback, "postJson");
         httpTask.execute(url);
     }
+
+    public static void postImage(String url, RequestParams params, File file, AsynNetUtils.Callback callback) {
+
+        UPTask htastk = new UPTask(file,params, callback);
+        htastk.execute(url);
+    }
+
+
 
     static class HttpTask extends AsyncTask<String, Integer, String> {
 
@@ -139,5 +148,28 @@ public class AsynNetUtils {
             super.onPostExecute(s);
         }
     }
+    static class UPTask extends AsyncTask<String, Integer, String> {
+
+        private File file;
+        private AsynNetUtils.Callback callback;
+        private RequestParams params;
+
+        public UPTask(File file, RequestParams params, AsynNetUtils.Callback callback) {
+            this.file = file;
+            this.callback = callback;
+            this.params = params;
+        }
+
+        protected String doInBackground(String... url) {
+            String response = NetUtil.getInstance().uploadFile(url[0], params, file);
+            return response;
+        }
+
+        protected void onPostExecute(String s) {
+            this.callback.onResponse(s);
+            super.onPostExecute(s);
+        }
+    }
+
 
 }
