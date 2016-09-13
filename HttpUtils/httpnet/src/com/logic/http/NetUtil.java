@@ -285,7 +285,9 @@ public class NetUtil {
             if (responseCode != 200) {
                 throw new NetworkErrorException("responsestatusis" + responseCode);
             }
-            sessionid = getSessionid(conn);
+       if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
             InputStream is = conn.getInputStream();
             String response = getStringFromInputStream(is);
             String var9 = response;
@@ -319,7 +321,9 @@ public class NetUtil {
             if (responseCode != 200) {
                 throw new NetworkErrorException("responsestatusis" + responseCode);
             }
-            sessionid = getSessionid(conn);
+        if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
             InputStream is = conn.getInputStream();
             String response = getStringFromInputStream(is);
             var6 = response;
@@ -350,7 +354,9 @@ public class NetUtil {
             conn.setRequestMethod("GET");
             if (conn.getResponseCode() == 200) {
                 //  sessionid=getSessionid(conn);
-                sessionid = getSessionid(conn);
+               if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 return response;
@@ -376,7 +382,9 @@ public class NetUtil {
             conn.setConnectTimeout(20000);
             conn.setRequestMethod("GET");
             if (conn.getResponseCode() == 200) {
-                sessionid = getSessionid(conn);
+         if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 return response;
@@ -415,7 +423,9 @@ public class NetUtil {
             out.close();
             //获取Cookie：从返回的消息头里的Set-Cookie的相应的值
             if (conn.getResponseCode() == 200) {
-                sessionid = getSessionid(conn);
+             if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 return response;
@@ -450,7 +460,9 @@ public class NetUtil {
             out.flush();
             out.close();
             if (conn.getResponseCode() == 200) {
-                sessionid = getSessionid(conn);
+                if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 return response;
@@ -486,7 +498,9 @@ public class NetUtil {
             out.flush();
             out.close();
             if (conn.getResponseCode() == 200) {
-                sessionid = getSessionid(conn);
+              if(sessionid == null || sessionid.equals("")) {
+                    sessionid = getSessionid(conn);
+                }
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 return response;
@@ -595,7 +609,9 @@ public class NetUtil {
                 int res = conn.getResponseCode();
                 Log.e(TAG, "response code:" + res);
                 if (conn.getResponseCode() == 200) {
+                     if(sessionid == null || sessionid.equals("")) {
                     sessionid = getSessionid(conn);
+                }
                     InputStream is2 = conn.getInputStream();
                     String response = getStringFromInputStream(is2);
                     return response;
