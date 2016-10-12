@@ -45,6 +45,10 @@ public class AsynNetUtils {
         httpTask.execute(url);
     }
 
+    public static void get(String url, AsynNetUtils.Callback callback) {
+        AsynNetUtils.HttpTask httpTask = new AsynNetUtils.HttpTask((RequestParams) null, callback, "get");
+        httpTask.execute(url);
+    }
 
     public static void postHttp(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postHttp");
@@ -62,17 +66,16 @@ public class AsynNetUtils {
         httpTask.execute(url);
     }
 
-    public static void postRJson(final String url,final RequestParams params, final Callback callback) {
+    public static void postRJson(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postJson");
         httpTask.execute(url);
     }
 
     public static void postImage(String url, RequestParams params, File file, AsynNetUtils.Callback callback) {
 
-        UPTask htastk = new UPTask(file,params, callback);
+        UPTask htastk = new UPTask(file, params, callback);
         htastk.execute(url);
     }
-
 
 
     static class HttpTask extends AsyncTask<String, Integer, String> {
@@ -95,6 +98,8 @@ public class AsynNetUtils {
 
             if ("getUrl".equals(method)) {
                 response = NetUtil.getInstance().sendURLGETRequest(url[0], params);
+            } else if ("get".equals(this.method)) {
+                response = NetUtil.getInstance().get(url[0]);
             } else if ("postUrl".equals(method)) {
                 response = NetUtil.getInstance().sendURLPOSTRequest(url[0], params);
             } else if ("getHttp".equals(method)) {
@@ -103,11 +108,9 @@ public class AsynNetUtils {
                 response = NetUtil.getInstance().sendPOSTRequestHttpClient(url[0], params.map);
             } else if ("postXml".equals(method)) {
                 response = NetUtil.getInstance().postXml(url[0], params.map);
-            }else if ("postJson".equals(method)) {
+            } else if ("postJson".equals(method)) {
                 response = NetUtil.getInstance().sendURLPOSTRJson(url[0], params);
             }
-
-
 
 
             return response;
@@ -148,6 +151,7 @@ public class AsynNetUtils {
             super.onPostExecute(s);
         }
     }
+
     static class UPTask extends AsyncTask<String, Integer, String> {
 
         private File file;

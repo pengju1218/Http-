@@ -6,6 +6,9 @@ import android.util.Log;
 import android.util.Xml;
 
 
+import com.logic.http.util.SaxService;
+import com.logic.http.util.XMLUtil;
+
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -31,7 +34,19 @@ import org.apache.http.util.EntityUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -46,6 +61,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -184,7 +201,7 @@ public class NetUtil {
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 Log.i("testxml", response + "");
-                return getXmlJson(response);
+                return SaxService.readXml(response, "xml");
             }
 
             if (conn != null)
