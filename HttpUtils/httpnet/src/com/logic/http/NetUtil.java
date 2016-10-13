@@ -559,8 +559,10 @@ public class NetUtil {
      */
     public static String uploadFile(String RequestURL, RequestParams params, File file) {
         //  String sbp = params.getParams().substring(1, params.getParams().length());
-        String sses = params.getUpInfo();
-        Log.i("eeesaes", sses);
+       // String sses = params.getUser1();
+
+       // String sses2 = params.getUser();
+       // Log.i("eeesaes", sses);
         //byte[] entity=sbp.getBytes();
         String BOUNDARY = UUID.randomUUID().toString(); //边界标识 随机生成
         String PREFIX = "--", LINE_END = "\r\n";
@@ -583,12 +585,18 @@ public class NetUtil {
             //设置编码
             conn.setRequestProperty("connection", "keep-alive");
             conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
-            conn.setRequestProperty("Content-Disposition", sses);
+           // String uuid = sses2.split("=")[1];
+            conn.setRequestProperty("Head-Content", params.map.get("userId"));
+            conn.setRequestProperty("Head-LanguageType", params.map.get("languageType"));
+
+
+            //conn.setRequestProperty("Content-Disposition", sses);
             if (file != null) {
                 /** * 当文件不为空，把文件包装并且上传 */
                 OutputStream outputSteam = conn.getOutputStream();
 
                 DataOutputStream dos = new DataOutputStream(outputSteam);
+            //    dos.write(sses.getBytes());
                 StringBuffer sb = new StringBuffer();
                 sb.append(PREFIX);
                 sb.append(BOUNDARY);
@@ -598,11 +606,9 @@ public class NetUtil {
                  * name里面的值为服务器端需要key 只有这个key 才可以得到对应的文件
                  * filename是文件的名字，包含后缀名的 比如:abc.png
                  */
-                sb.append("Content-Disposition: form-data; ok=\"11111111111111111111\";name=\"img\";" + sses + ";filename=\"" + file.getName() + "\"" + LINE_END);
-
+                sb.append("Content-Disposition: form-data; name=\"img\";filename=\"" + file.getName() + "\"" + LINE_END);
                 sb.append("Content-Type: application/octet-stream; charset=" + CHARSET + LINE_END);
                 sb.append(LINE_END);
-
                 dos.write(sb.toString().getBytes());
                 InputStream is = new FileInputStream(file);
                 byte[] bytes = new byte[1024];
@@ -615,7 +621,6 @@ public class NetUtil {
                 byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
                 dos.write(end_data);
                 dos.flush();
-
              /*   outputSteam.write(entity);
                 outputSteam.flush();
                 outputSteam.close();*/
@@ -626,9 +631,9 @@ public class NetUtil {
                 int res = conn.getResponseCode();
                 Log.e(TAG, "response code:" + res);
                 if (conn.getResponseCode() == 200) {
-                     if(sessionid == null || sessionid.equals("")) {
-                    sessionid = getSessionid(conn);
-                }
+                    if(sessionid==null||sessionid.equals("")){
+                        sessionid = getSessionid(conn);
+                    }
                     InputStream is2 = conn.getInputStream();
                     String response = getStringFromInputStream(is2);
                     return response;
@@ -641,4 +646,5 @@ public class NetUtil {
         }
         return FAILURE;
     }
+
 }
