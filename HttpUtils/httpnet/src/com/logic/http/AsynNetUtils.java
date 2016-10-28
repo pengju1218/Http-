@@ -5,12 +5,14 @@ import android.os.Handler;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2016/7/24 0024.
  */
 public class AsynNetUtils {
-
+    static ExecutorService pool = Executors.newFixedThreadPool(100);
     public static AsynNetUtils asynNetUtils;
 
 
@@ -30,51 +32,51 @@ public class AsynNetUtils {
     public static void getUrl(final String url, RequestParams params, final Callback callback) {
 
         HttpTask httpTask = new HttpTask(params, callback, "getUrl");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
 
     }
 
 
     public static void postUrl(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postUrl");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void getHttp(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "getHttp");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void get(String url, AsynNetUtils.Callback callback) {
         AsynNetUtils.HttpTask httpTask = new AsynNetUtils.HttpTask((RequestParams) null, callback, "get");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void postHttp(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postHttp");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
 
     public static void postXml(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postXml");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void postJsonUrl(final String url, final String json, final Callback callback) {
         JsonHttpTask httpTask = new JsonHttpTask(json, callback, "json");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void postRJson(final String url, final RequestParams params, final Callback callback) {
         HttpTask httpTask = new HttpTask(params, callback, "postJson");
-        httpTask.execute(url);
+        httpTask.executeOnExecutor(pool, url);
     }
 
     public static void postImage(String url, RequestParams params, File file, AsynNetUtils.Callback callback) {
 
         UPTask htastk = new UPTask(file, params, callback);
-        htastk.execute(url);
+        htastk.executeOnExecutor(pool, url);
     }
 
 
